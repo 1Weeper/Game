@@ -1,42 +1,8 @@
 #include <iostream>
 #include <windows.h>
 
-void ClearScreen()
-  {
-  HANDLE                     hStdOut;
-  CONSOLE_SCREEN_BUFFER_INFO csbi;
-  DWORD                      count;
-  DWORD                      cellCount;
-  COORD                      homeCoords = { 0, 0 };
 
-  hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
-  if (hStdOut == INVALID_HANDLE_VALUE) return;
 
-  /* Get the number of cells in the current buffer */
-  if (!GetConsoleScreenBufferInfo( hStdOut, &csbi )) return;
-  cellCount = csbi.dwSize.X *csbi.dwSize.Y;
-
-  /* Fill the entire buffer with spaces */
-  if (!FillConsoleOutputCharacter(
-    hStdOut,
-    (TCHAR) ' ',
-    cellCount,
-    homeCoords,
-    &count
-    )) return;
-
-  /* Fill the entire buffer with the current colors and attributes */
-  if (!FillConsoleOutputAttribute(
-    hStdOut,
-    csbi.wAttributes,
-    cellCount,
-    homeCoords,
-    &count
-    )) return;
-
-  /* Move the cursor home */
-  SetConsoleCursorPosition( hStdOut, homeCoords );
-  }
 
 using namespace std;
 
@@ -72,6 +38,44 @@ int cash = 0;
 
 int frame = 1;
 
+void clr()
+{
+    HANDLE                     hStdOut;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD                      count;
+    DWORD                      cellCount;
+    COORD                      homeCoords = { 0, 0 };
+
+    hStdOut = GetStdHandle( STD_OUTPUT_HANDLE );
+    if (hStdOut == INVALID_HANDLE_VALUE) return;
+
+    /* Get the number of cells in the current buffer */
+    if (!GetConsoleScreenBufferInfo( hStdOut, &csbi )) return;
+    cellCount = csbi.dwSize.X *csbi.dwSize.Y;
+
+    /* Fill the entire buffer with spaces */
+    if (!FillConsoleOutputCharacter(
+                hStdOut,
+                (TCHAR) ' ',
+                cellCount,
+                homeCoords,
+                &count
+            )) return;
+
+    /* Fill the entire buffer with the current colors and attributes */
+    if (!FillConsoleOutputAttribute(
+                hStdOut,
+                csbi.wAttributes,
+                cellCount,
+                homeCoords,
+                &count
+            )) return;
+
+    /* Move the cursor home */
+    SetConsoleCursorPosition( hStdOut, homeCoords );
+}
+
+
 int win()
 {
     cout << endl << "Congrats you past level 1!" << endl;
@@ -89,7 +93,7 @@ int main()
 {
     while(game_running == true)
     {
-        ClearScreen();
+        clr();
         for(int display=0; display<xres; display++)
         {
             cout << map[display] << endl;
@@ -129,6 +133,10 @@ int main()
                 y--;
                 map[y][x]=plr;
             }
+            else if(map[y-1][x]==enemy)
+            {
+                lost();
+            }
         }
 
         if(GetAsyncKeyState(VK_DOWN)!= 0)
@@ -138,6 +146,10 @@ int main()
                 map[y][x]=' ';
                 y++;
                 map[y][x]=plr;
+            }
+            else if(map[y+1][x]==enemy)
+            {
+                lost();
             }
         }
         if(GetAsyncKeyState(VK_RIGHT)!= 0)
