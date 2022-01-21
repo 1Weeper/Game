@@ -1,5 +1,4 @@
 #include <iostream>
-#include <unistd.h>
 #include <windows.h>
 
 using namespace std;
@@ -12,7 +11,7 @@ const int yres=24;
 char map[xres][yres] =
 {
     "###################",
-    "#x      ## $$$$   #",
+    "#x      ##        #",
     "#   $$  ##        #####",
     "#   $$  ##            #",
     "#       ##        #   #",
