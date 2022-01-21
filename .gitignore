@@ -1,0 +1,5 @@
+bin/
+obj/
+Game.layout
+Game.depend
+Game.cbp
